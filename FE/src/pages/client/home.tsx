@@ -1,8 +1,8 @@
 import { Banner } from "@/components/features/Banner";
 import { PostCard } from "@/components/features/post/PostCard";
-import { Button } from "@/components/ui/Button";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { fakePosts } from "@/constants/postData";
+import { Link } from "react-router-dom";
 
 export default function HomePage() {
   return (

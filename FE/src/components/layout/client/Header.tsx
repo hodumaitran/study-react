@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/Button";
-import React from "react";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -11,12 +10,6 @@ const Header = () => {
           <ul className="flex justify-center items-center gap-5">
             <li className="font-semibold hover:text-gray-500">
               <Link to="/">Trang chủ</Link>
-            </li>
-            <li className="font-semibold hover:text-gray-500">
-              <Link to="/quan-ly-bai-viet">Quản Lý Bài Viết</Link>
-            </li>
-            <li className="font-semibold hover:text-gray-500">
-              <Link to="/them-bai-viet">Thêm Bài Viết</Link>
             </li>
           </ul>
           <div className="">

@@ -5,7 +5,7 @@ export interface Author {
 
 export interface PostProps {
   id: number;
-  image: string;
+  thumbnail: string;
   title: string;
   content: string;
   createdAt: string;
@@ -15,7 +15,7 @@ export interface PostProps {
 export const fakePosts: PostProps[] = [
   {
     id: 1,
-    image:
+    thumbnail:
       "https://media.vov.vn/sites/default/files/styles/large/public/2021-12/1_154.jpg",
     title: "Giới thiệu về React",
     content:
@@ -28,7 +28,7 @@ export const fakePosts: PostProps[] = [
   },
   {
     id: 2,
-    image:
+    thumbnail:
       "https://media.vov.vn/sites/default/files/styles/large/public/2021-12/1_154.jpg",
     title: "Học Tailwind CSS",
     content:
@@ -41,7 +41,7 @@ export const fakePosts: PostProps[] = [
   },
   {
     id: 3,
-    image:
+    thumbnail:
       "https://media.vov.vn/sites/default/files/styles/large/public/2021-12/1_154.jpg",
     title: "Sử dụng React Router",
     content:
@@ -54,7 +54,7 @@ export const fakePosts: PostProps[] = [
   },
   {
     id: 4,
-    image:
+    thumbnail:
       "https://media.vov.vn/sites/default/files/styles/large/public/2021-12/1_154.jpg",
     title: "Giới thiệu về React",
     content:
@@ -67,7 +67,7 @@ export const fakePosts: PostProps[] = [
   },
   {
     id: 5,
-    image:
+    thumbnail:
       "https://media.vov.vn/sites/default/files/styles/large/public/2021-12/1_154.jpg",
     title: "Học Tailwind CSS",
     content:
@@ -80,7 +80,7 @@ export const fakePosts: PostProps[] = [
   },
   {
     id: 6,
-    image:
+    thumbnail:
       "https://media.vov.vn/sites/default/files/styles/large/public/2021-12/1_154.jpg",
     title: "Sử dụng React Router",
     content:

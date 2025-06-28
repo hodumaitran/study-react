@@ -1,19 +1,18 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { fakePosts } from "@/constants/postData"; // Nếu dùng API thật thì thay bằng fetch
+import { fakePosts, PostProps } from "@/constants/postData"; // Nếu dùng API thật thì thay bằng fetch
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function BlogDetailPage() {
   const { id } = useParams();
-  const [post, setPost] = useState<any>(null);
+  const [post, setPost] = useState<PostProps | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Nếu dùng API thật, thay đoạn này bằng fetch(`/api/posts/${id}`)
     const found = fakePosts.find((p) => String(p.id) === String(id));
-    setPost(found);
+    setPost(found ?? null);
     setLoading(false);
   }, [id]);
 
@@ -49,7 +48,7 @@ export default function BlogDetailPage() {
       </div>
       <Card className="overflow-hidden rounded-xl">
         <img
-          src={post.image}
+          src={post.thumbnail}
           alt={post.title}
           className="w-full h-full object-contain"
         />

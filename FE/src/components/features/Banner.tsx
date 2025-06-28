@@ -1,7 +1,7 @@
-import { PostCardBanner } from "./post/PostCardBanner";
+import { Button } from "@/components/ui/button";
 import { fakePosts } from "@/constants/postData";
-import { Button } from "@/components/ui/Button";
 import { Link } from "react-router-dom";
+import { PostCardBanner } from "./post/PostCardBanner";
 
 export const Banner = () => {
   return (
@@ -35,7 +35,11 @@ export const Banner = () => {
         <h3 className="text-xl font-semibold">Bài viết nổi bật khác</h3>
         {fakePosts.slice(0, 5).map((item, id) => (
           <Link key={item.id} to={`/bai-viet/${item.id}`}>
-            <PostCardBanner key={id} image={item.image} title={item.title} />
+            <PostCardBanner
+              key={id}
+              image={item.thumbnail}
+              title={item.title}
+            />
           </Link>
         ))}
       </div>

@@ -1,25 +1,11 @@
-import React from "react";
-
-interface Author {
-  image: string;
-  fullname: string;
-}
-
-export interface PostProps {
-  id: number;
-  image: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  author: Author;
-}
+import { PostProps } from "@/constants/postData";
 
 export const PostCard = ({ post }: { post: PostProps }) => {
   return (
     <div className="">
       <div className="w-full h-[250px]">
         <img
-          src={post.image}
+          src={post.thumbnail}
           alt={post.title}
           className="w-full h-full object-cover rounded-2xl"
         />
