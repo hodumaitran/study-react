@@ -16,23 +16,44 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { fakePosts } from "@/constants/postData";
+import { deleteBlog, getBlogs } from "@/services/blog.service";
+import { IBlog } from "@/types";
+import { formatDate } from "@/utils/formatter";
 import { Edit, Eye, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const PostListPage = () => {
-  const [posts, setPosts] = useState(fakePosts);
+  const [posts, setPosts] = useState<IBlog[]>([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const handleDelete = (id: number) => {
-    setPosts(posts.filter((post) => post.id !== id));
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const data = await getBlogs();
+        setPosts(data);
+      } catch (error) {
+        toast.error("Không thể tải danh sách bài viết!");
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteBlog(id);
+      setPosts(posts.filter((post) => post._id !== id));
+      toast.success("Xóa bài viết thành công!");
+    } catch (error) {
+      toast.error("Xóa bài viết thất bại!");
+    }
     setOpenDialog(false);
     setSelectedId(null);
   };
 
-  const handleOpenDialog = (id: number) => {
+  const handleOpenDialog = (id: string) => {
     setSelectedId(id);
     setOpenDialog(true);
   };
@@ -61,7 +82,7 @@ const PostListPage = () => {
         </TableHeader>
         <TableBody>
           {posts.map((post) => (
-            <TableRow key={post.id}>
+            <TableRow key={post._id}>
               <TableCell>
                 <img
                   src={post.thumbnail}
@@ -81,29 +102,29 @@ const PostListPage = () => {
                       {post.status === "published" ? "Đã xuất bản" : "Bản nháp"}
                     </span>
                   </TableCell> */}
-              <TableCell>{post.createdAt}</TableCell>
+              <TableCell>{formatDate(post.createdAt)}</TableCell>
               <TableCell>
                 <div className="flex gap-3">
                   <Link
-                    to={`/bai-viet/${post.id}`}
+                    to={`/bai-viet/${post._id}`}
                     target="_blank"
                     className="bg-gray-100 hover:bg-gray-200 size-8 rounded-md border flex items-center justify-center p-2 text-gray-700 dark:text-textGray hover:border-opacity-80 dark:bg-transparent border-gray-200 dark:hover:border-opacity-30 transition-all"
                   >
                     <Eye />
                   </Link>
                   <Link
-                    to={`/admin/posts/${post.id}/edit`}
+                    to={`/admin/posts/${post._id}/edit`}
                     className="bg-gray-100 hover:bg-gray-200 size-8 rounded-md border flex items-center justify-center p-2 text-gray-700 dark:text-textGray hover:border-opacity-80 dark:bg-transparent border-gray-200 dark:hover:border-opacity-30 transition-all"
                   >
                     <Edit />
                   </Link>
                   <Dialog
-                    open={openDialog && selectedId === post.id}
+                    open={openDialog && selectedId === post._id}
                     onOpenChange={setOpenDialog}
                   >
                     <DialogTrigger asChild>
                       <button
-                        onClick={() => handleOpenDialog(post.id)}
+                        onClick={() => handleOpenDialog(post._id)}
                         className="bg-gray-100 hover:bg-gray-200 size-8 rounded-md border flex items-center justify-center p-2 text-gray-700 dark:text-textGray hover:border-opacity-80 dark:bg-transparent border-gray-200 dark:hover:border-opacity-30 transition-all"
                       >
                         <Trash2 />
@@ -123,7 +144,7 @@ const PostListPage = () => {
                         </DialogClose>
                         <Button
                           variant="destructive"
-                          onClick={() => handleDelete(post.id)}
+                          onClick={() => handleDelete(post._id)}
                         >
                           Xóa
                         </Button>
