@@ -10,11 +10,11 @@ import Blog from "./models/blog.model.js";
 import User from "./models/user.model.js";
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    return callback(null, true);
-  },
-  optionsSuccessStatus: 200,
-  credentials: true,
+	origin: function (origin, callback) {
+		return callback(null, true);
+	},
+	optionsSuccessStatus: 200,
+	credentials: true,
 };
 
 const START_SERVER = () => {
@@ -243,13 +243,13 @@ const START_SERVER = () => {
 };
 
 (async () => {
-  try {
-    // Start Back-end Server
-    await connectDB();
-    console.log("Starting Server...");
-    START_SERVER();
-  } catch (error) {
-    console.error(error);
-    process.exit(0);
-  }
+	try {
+		// Start Back-end Server
+		await connectDB();
+		console.log("Starting Server...");
+		START_SERVER();
+	} catch (error) {
+		console.error(error);
+		process.exit(0);
+	}
 })();

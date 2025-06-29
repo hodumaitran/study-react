@@ -22,6 +22,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "@/store/useAuth";
+import { PencilIcon, UserCircleIcon } from "lucide-react";
+import { Link, Outlet } from "react-router-dom";
 
 const mockUser = {
   name: "Nguyễn Văn A",
@@ -33,6 +36,8 @@ const mockUser = {
 export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
 
+export function AdminLayout() {
+  const { user } = useAuth();
   const tabs = [
     { title: "Quản lý bài viết", icon: Layers, href: "/admin/posts" },
     {
@@ -113,7 +118,7 @@ export default function AdminLayout() {
               <Avatar className="w-8 h-8">
                 <AvatarImage src={mockUser.avatar} />
                 <AvatarFallback>
-                  {mockUser.username.slice(0, 2).toUpperCase()}
+                  {user?.username}
                 </AvatarFallback>
               </Avatar>
               {!collapsed && (
