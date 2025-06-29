@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  fullname: {
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 3,
+  },
   username: {
     type: String,
     required: true,
@@ -18,6 +24,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true,
+  },
+  avatar: {
+    type: String,
+    default: "https://cdn-icons-png.flaticon.com/128/456/456212.png",
   },
   createdAt: {
     type: Date,

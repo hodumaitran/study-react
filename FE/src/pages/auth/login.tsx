@@ -1,6 +1,10 @@
-import React from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, AlertCircle } from "lucide-react";
+import { useAuth } from "@/store/useAuth";
 
 type LoginFormInputs = {
   email: string;
@@ -8,15 +12,30 @@ type LoginFormInputs = {
 };
 
 const LoginPage = () => {
+  const setUser = useAuth((state) => state.setUser);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormInputs>();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log("Dữ liệu đăng nhập:", data);
-    alert("Đăng nhập thành công!");
+  const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const navigate = useNavigate();
+
+  const onSubmit = async (data: LoginFormInputs) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/login", data, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      setUser(res.data.user);
+      navigate("/admin");
+    } catch (err: any) {
+      setAlert({
+        type: "error",
+        message: err.response?.data?.message || "Đăng nhập thất bại!",
+      });
+    }
   };
 
   return (
@@ -27,6 +46,18 @@ const LoginPage = () => {
       <h2 className="text-2xl font-bold text-center text-blue-600">
         Đăng nhập
       </h2>
+
+      {/* Hiển thị alert chỉ khi thất bại */}
+      {alert && (
+        <Alert
+          variant="destructive"
+          className="mb-2 border-red-500 bg-red-50 text-red-700"
+        >
+          <AlertCircle className="mt-1 text-red-500" />
+          <AlertTitle>Lỗi đăng nhập</AlertTitle>
+          <AlertDescription>{alert.message}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Email */}
       <div>
@@ -57,10 +88,6 @@ const LoginPage = () => {
           type="password"
           {...register("password", {
             required: "Vui lòng nhập mật khẩu",
-            minLength: {
-              value: 6,
-              message: "Mật khẩu tối thiểu 6 ký tự",
-            },
           })}
           className={`w-full border px-3 py-2 rounded-lg focus:outline-none ${
             errors.password ? "border-red-500" : "border-gray-300"
