@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { Editor as TinyMCEEditor } from "tinymce";
 import { z } from "zod";
 
@@ -17,7 +17,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getBlogById, updateBlog } from "@/services/blog.service";
 import { Upload } from "lucide-react";
+import { toast } from "sonner";
 
 const postSchema = z.object({
   title: z.string().min(1, "Tiêu đề là bắt buộc"),
@@ -32,6 +34,7 @@ const EditPostPage = () => {
   const editorRef = useRef<TinyMCEEditor | null>(null);
   const [loading, setLoading] = useState(true);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  let navigate = useNavigate();
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(postSchema),
@@ -46,35 +49,44 @@ const EditPostPage = () => {
     const fetchPost = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/posts/${id}`);
-        if (!res.ok) throw new Error("Không tìm thấy bài viết");
-        const data = await res.json();
+        if (!id) return;
+        const data = await getBlogById(id);
         form.reset({
           title: data.title || "",
           thumbnail: undefined,
           content: data.content || "",
         });
         setPreviewImage(data.thumbnail || null);
-        if (editorRef.current && data.content) {
-          editorRef.current.setContent(data.content);
-        }
       } catch {
         form.reset({ title: "", thumbnail: undefined, content: "" });
       } finally {
         setLoading(false);
       }
     };
-    if (id) fetchPost();
+    fetchPost();
   }, [id]);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const handleUpdatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     const content = editorRef.current?.getContent() || "";
     form.setValue("content", content);
     const isValid = await form.trigger();
-    if (!isValid) return;
+    if (!isValid || !id) return;
     const data = form.getValues();
-    console.log("Form cập nhật:", data);
+
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("content", data.content);
+    formData.append("thumbnail", data.thumbnail);
+    try {
+      await updateBlog(id, formData);
+      // Hiển thị thông báo thành công nếu muốn
+      toast.success("Cập nhật bài viết thành công!");
+      navigate("/admin/posts");
+    } catch (error) {
+      toast.error("Cập nhật bài viết thất bại!");
+      console.error("Cập nhật bài viết thất bại:", error);
+    }
   };
 
   if (loading) return <div>Đang tải dữ liệu...</div>;
@@ -86,7 +98,7 @@ const EditPostPage = () => {
       <Card className="py-6">
         <CardContent>
           <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-6">
+            <form onSubmit={handleUpdatePost} className="space-y-6">
               <div className="flex flex-col md:flex-row gap-6 items-start">
                 <FormField
                   control={form.control}
@@ -157,7 +169,7 @@ const EditPostPage = () => {
               <FormField
                 control={form.control}
                 name="content"
-                render={() => (
+                render={({ field }) => (
                   <FormItem>
                     <Label htmlFor="content">Nội dung</Label>
                     <FormControl>
@@ -169,6 +181,11 @@ const EditPostPage = () => {
                             const content = form.getValues("content");
                             if (content) editor.setContent(content);
                           }}
+                          onEditorChange={(content: any) =>
+                            field.onChange(content)
+                          }
+                          onBlur={field.onBlur}
+                          value={field.value}
                           init={{
                             height: 300,
                             menubar: false,
@@ -189,6 +206,8 @@ const EditPostPage = () => {
                               "media",
                               "table",
                               "heading",
+                              "blockquote",
+                              "code",
                             ],
                             toolbar:
                               "undo redo | " +
@@ -196,10 +215,10 @@ const EditPostPage = () => {
                               "alignright alignjustify | bullist numlist |" +
                               "image |" +
                               "h1 h2 h3 h4 h5 h6 | preview | fullscreen |" +
-                              "link",
+                              "link | blockquote | code",
                             content_style: `@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');body { font-family: Manrope,Helvetica,Arial,sans-serif; font-size:14px; line-height: 2; padding-bottom: 32px; } img { max-width: 100%; height: auto; display: block; margin: 0 auto; };`,
                             images_upload_url:
-                              "http://localhost:3000/api/upload-image",
+                              "http://localhost:3000/api/images",
                             automatic_uploads: true,
                             file_picker_types: "image",
                           }}

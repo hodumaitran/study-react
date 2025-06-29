@@ -1,4 +1,4 @@
-import { AdminLayout } from "@/components/layout/admin/AdminLayout";
+import AdminLayout from "@/components/layout/admin/AdminLayout";
 import AuthLayout from "@/components/layout/auth/AuthLayout";
 import MainLayout from "@/components/layout/client/MainLayout";
 import CreatePostPage from "@/pages/admin/CreatePostPage";

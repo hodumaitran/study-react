@@ -82,11 +82,13 @@ const START_SERVER = () => {
   // Tạo blog
   app.post("/api/blogs", upload.single("thumbnail"), async (req, res) => {
     try {
-      const { title, content } = req.body;
+      const { title, content, author } = req.body;
       let thumbnailUrl = req.body.thumbnail;
 
-      if (!title || !content) {
-        return res.status(400).json({ message: "Thiếu title hoặc content" });
+      if (!title || !content || !author) {
+        return res
+          .status(400)
+          .json({ message: "Thiếu title, content hoặc author" });
       }
 
       // Nếu có file thumbnail thì lưu file và lấy url
@@ -103,7 +105,7 @@ const START_SERVER = () => {
         title,
         thumbnail: thumbnailUrl,
         content,
-        createdAt: new Date(),
+        author,
       });
       await newBlog.save();
       res.status(201).json(newBlog);
@@ -115,7 +117,7 @@ const START_SERVER = () => {
   // Lấy danh sách blog
   app.get("/api/blogs", async (req, res) => {
     try {
-      const blogs = await Blog.find();
+      const blogs = await Blog.find().populate("author");
       res.status(200).json(blogs);
     } catch (error) {
       res.status(500).json({ message: "Error fetching blogs", error });
@@ -125,10 +127,8 @@ const START_SERVER = () => {
   // Lấy chi tiết blog theo ID
   app.get("/api/blogs/:id", async (req, res) => {
     try {
-      console.log("get");
-
       const { id } = req.params;
-      const blog = await Blog.findById(id);
+      const blog = await Blog.findById(id).populate("author");
       if (!blog) {
         return res.status(404).json({ message: "Blog not found" });
       }
@@ -147,6 +147,17 @@ const START_SERVER = () => {
         ...(title && { title }),
         ...(content && { content }),
       };
+
+      // Nếu có file thumbnail mới thì lưu file và cập nhật đường dẫn
+      if (req.file) {
+        const fileName = `${Date.now()}-${req.file.originalname}`;
+        const uploadPath = path.join(uploadDir, fileName);
+        fs.writeFileSync(uploadPath, req.file.buffer);
+        updateData.thumbnail = `${req.protocol}://${req.get(
+          "host"
+        )}/uploads/${fileName}`;
+      }
+
       const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, {
         new: true,
       });
