@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/store/useAuth";
 import { PencilIcon, UserCircleIcon } from "lucide-react";
 import { Link, Outlet } from "react-router-dom";
 
@@ -22,6 +23,7 @@ const mockUser = {
 };
 
 export function AdminLayout() {
+  const { user } = useAuth();
   const tabs = [
     { title: "Quản lý bài viết", icon: PencilIcon, href: "/admin/posts" },
     {
@@ -62,12 +64,12 @@ export function AdminLayout() {
           <SidebarFooter className="px-4 py-4 border-t">
             <div className="flex items-center space-x-2">
               <Avatar>
-                <AvatarImage src={mockUser.avatar} />
+                <AvatarImage src={user?.avatar} />
                 <AvatarFallback>
-                  {mockUser.username.slice(0, 2).toUpperCase()}
+                  {user?.username}
                 </AvatarFallback>
               </Avatar>
-              <span>{mockUser.username}</span>
+              <span>{user?.username}</span>
             </div>
           </SidebarFooter>
         </Sidebar>
