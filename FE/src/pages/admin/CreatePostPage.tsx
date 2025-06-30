@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createBlog } from "@/services/blog.service";
+import { useAuth } from "@/store/useAuth";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,6 +32,7 @@ type PostFormValues = z.infer<typeof postSchema>;
 const CreatePostPage = () => {
   const editorRef = useRef<TinyMCEEditor | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const { user } = useAuth();
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(postSchema),
@@ -46,8 +48,12 @@ const CreatePostPage = () => {
     formData.append("title", data.title);
     formData.append("content", data.content);
     formData.append("thumbnail", data.thumbnail);
-    // Giả sử ID của tác giả ==> Lấy ID từ state khi đăng nhập
-    formData.append("author", "685ba98e8f098d2d02667db1");
+    if (user?._id) {
+      formData.append("author", user._id);
+    } else {
+      toast.error("Không tìm thấy thông tin người dùng!");
+      return;
+    }
 
     try {
       await createBlog(formData);

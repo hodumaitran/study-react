@@ -10,11 +10,11 @@ import Blog from "./models/blog.model.js";
 import User from "./models/user.model.js";
 
 const corsOptions = {
-	origin: function (origin, callback) {
-		return callback(null, true);
-	},
-	optionsSuccessStatus: 200,
-	credentials: true,
+  origin: function (origin, callback) {
+    return callback(null, true);
+  },
+  optionsSuccessStatus: 200,
+  credentials: true,
 };
 
 const START_SERVER = () => {
@@ -225,8 +225,7 @@ const START_SERVER = () => {
           .status(401)
           .json({ message: "Email hoặc mật khẩu không đúng" });
       }
-      // Không trả về cookie
-      res.status(200).json({ message: "Đăng nhập thành công" });
+      res.status(200).json({ message: "Đăng nhập thành công", user });
     } catch (error) {
       res.status(500).json({ message: "Lỗi đăng nhập", error });
     }
@@ -243,13 +242,13 @@ const START_SERVER = () => {
 };
 
 (async () => {
-	try {
-		// Start Back-end Server
-		await connectDB();
-		console.log("Starting Server...");
-		START_SERVER();
-	} catch (error) {
-		console.error(error);
-		process.exit(0);
-	}
+  try {
+    // Start Back-end Server
+    await connectDB();
+    console.log("Starting Server...");
+    START_SERVER();
+  } catch (error) {
+    console.error(error);
+    process.exit(0);
+  }
 })();
