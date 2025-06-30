@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/store/useAuth";
 import {
   ChevronLeft,
   ChevronRight,
@@ -21,22 +22,10 @@ import {
   UserCircleIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "@/store/useAuth";
-import { PencilIcon, UserCircleIcon } from "lucide-react";
-import { Link, Outlet } from "react-router-dom";
-
-const mockUser = {
-  name: "Nguyễn Văn A",
-  username: "admin",
-  email: "admin@example.com",
-  avatar: "https://via.placeholder.com/40x40",
-};
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 
 export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
-
-export function AdminLayout() {
   const { user } = useAuth();
   const tabs = [
     { title: "Quản lý bài viết", icon: Layers, href: "/admin/posts" },
@@ -49,6 +38,10 @@ export function AdminLayout() {
 
   const location = useLocation();
   const currentPath = location.pathname;
+
+  if (!user) {
+    return <Navigate to="/dang-nhap" replace state={{ from: location }} />;
+  }
 
   return (
     <SidebarProvider>
@@ -116,14 +109,10 @@ export function AdminLayout() {
           <SidebarFooter className="px-4 py-4 border-t border-gray-200">
             <div className="flex items-center space-x-2">
               <Avatar className="w-8 h-8">
-                <AvatarImage src={mockUser.avatar} />
-                <AvatarFallback>
-                  {user?.username}
-                </AvatarFallback>
+                <AvatarImage src={user?.avatar} />
+                <AvatarFallback>{user?.username}</AvatarFallback>
               </Avatar>
-              {!collapsed && (
-                <span className="text-sm">{mockUser.username}</span>
-              )}
+              {!collapsed && <span className="text-sm">{user?.username}</span>}
             </div>
           </SidebarFooter>
         </Sidebar>
