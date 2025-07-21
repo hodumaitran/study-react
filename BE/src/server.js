@@ -231,6 +231,54 @@ const START_SERVER = () => {
     }
   });
 
+  // Lấy thông tin user theo id
+	app.get("/api/users/:id", async (req, res) => {
+		try {
+			const {id} = req.params;
+			const user = await User.findById(id).select("-password");
+			if (!user) {
+				return res.status(404).json({message: "User not found"});
+			}
+			res.status(200).json(user);
+		} catch (error) {
+			res.status(500).json({message: "Lỗi lấy thông tin user", error});
+		}
+	});
+
+  // Cập nhật thông tin user theo id
+	app.patch("/api/users/:id", upload.single("avatar"), async (req, res) => {
+		try {
+			const {id} = req.params;
+			const {fullname, username, password, email} = req.body;
+			const updateData = {
+				...(fullname && {fullname}),
+				...(username && {username}),
+				...(email && {email}),
+        ...(password && {password}),
+			};
+
+			// Nếu có file avatar thì lưu file và lấy url
+			if (req.file) {
+				const fileName = `${Date.now()}-${req.file.originalname}`;
+				const uploadPath = path.join(uploadDir, fileName);
+				fs.writeFileSync(uploadPath, req.file.buffer);
+				updateData.avatar = `${req.protocol}://${req.get(
+					"host",
+				)}/uploads/${fileName}`;
+			}
+
+			const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+				new: true,
+			});
+			if (!updatedUser) {
+				return res.status(404).json({message: "User not found"});
+			}
+			res.status(200).json(updatedUser);
+		} catch (error) {
+			res.status(500).json({message: "Lỗi cập nhật user", error});
+		}
+	});
+
   const LOCAL_DEV_APP_PORT = 3000;
   const LOCAL_DEV_APP_HOST = "localhost";
 
