@@ -1,6 +1,6 @@
 export interface Author {
-  image: string;
-  fullname: string;
+  image?: string;
+  fullname?: string;
 }
 
 export interface PostProps {

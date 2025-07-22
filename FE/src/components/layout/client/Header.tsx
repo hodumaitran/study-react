@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/Button";
+import { Link, NavLink } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -9,7 +9,28 @@ const Header = () => {
         <div className="flex justify-between items-center gap-8">
           <ul className="flex justify-center items-center gap-5">
             <li className="font-semibold hover:text-gray-500">
-              <Link to="/">Trang chủ</Link>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-primary underline font-bold"
+                    : "hover:text-gray-500"
+                }
+              >
+                Trang chủ
+              </NavLink>
+            </li>
+            <li className="font-semibold hover:text-gray-500">
+              <NavLink
+                to="/lien-he"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-primary underline font-bold"
+                    : "hover:text-gray-500"
+                }
+              >
+                Liên hệ
+              </NavLink>
             </li>
           </ul>
           <div className="">
