@@ -9,6 +9,7 @@ import LoginPage from "@/pages/auth/login";
 import RegisterPage from "@/pages/auth/register";
 import AddBlogPage from "@/pages/client/addBlog";
 import BlogDetailPage from "@/pages/client/blogDetail";
+import { ContentPage } from "@/pages/client/content";
 import DashboardPage from "@/pages/client/dashboardPage";
 import HomePage from "@/pages/client/home";
 import NotFound from "@/pages/not-found";
@@ -21,13 +22,16 @@ export default function AppRoutes() {
         <Route path="dang-nhap" element={<LoginPage />} />
         <Route path="dang-ky" element={<RegisterPage />} />
       </Route>
+
       <Route element={<MainLayout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/quan-ly-bai-viet" element={<DashboardPage />} />
         <Route path="/them-bai-viet" element={<AddBlogPage />} />
         <Route path="/bai-viet/:id" element={<BlogDetailPage />} />
+        <Route path="/lien-he" element={<ContentPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
+
       <Route path="/admin/*" element={<AdminLayout />}>
         <Route index element={<Navigate to="posts" replace />} />
         <Route path="posts" element={<PostListPage />} />

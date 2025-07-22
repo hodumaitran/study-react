@@ -3,6 +3,8 @@ export interface IUser {
   username: string;
   password: string;
   email: string;
+  fullname: string;
+  avatar: string;
   createdAt: string;
 }
 
@@ -11,6 +13,6 @@ export interface IBlog {
   title: string;
   thumbnail: string;
   content: string;
-  author: IUser | string;
+  author: IUser;
   createdAt: string;
 }

@@ -125,3 +125,41 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
+
+.blog-content {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #222;
+  margin-top: 1.5rem;
+}
+
+.blog-content article {
+  background: #ececec;
+  padding: 1.5rem 1rem;
+  box-shadow: 2px 2px 8px #0001;
+  height: auto;
+  margin-bottom: 1.5rem;
+  border-left: #2563eb 4px solid;
+}
+
+.blog-content p {
+  margin-bottom: 1rem;
+}
+
+.blog-content blockquote {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 4px solid #2563eb;
+  color: #666;
+}
+
+.blog-content strong {
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.blog-content .markdown.prose {
+  color: #222;
+  font-size: 1rem;
+  line-height: 1.7;
+}

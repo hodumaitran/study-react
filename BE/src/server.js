@@ -186,8 +186,8 @@ const START_SERVER = () => {
 
   // Đăng ký
   app.post("/api/register", async (req, res) => {
-    const { username, password, email } = req.body;
-    if (!username || !password || !email) {
+    const { fullname, username, password, email } = req.body;
+    if (!fullname || !username || !password || !email) {
       return res.status(400).json({ message: "Thiếu thông tin đăng ký" });
     }
     try {
@@ -201,6 +201,7 @@ const START_SERVER = () => {
       }
       // Tạo người dùng mới
       const newUser = new User({
+        fullname,
         username,
         password,
         email,
