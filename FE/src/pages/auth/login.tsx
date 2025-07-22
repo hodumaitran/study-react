@@ -1,41 +1,20 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Link } from "react-router-dom";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle, AlertCircle } from "lucide-react";
-import { useAuth } from "@/store/useAuth";
-
-type LoginFormInputs = {
-  email: string;
-  password: string;
-};
+import { AlertCircle } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { LoginData } from "@/services/auth.service";
 
 const LoginPage = () => {
-  const setUser = useAuth((state) => state.setUser);
+  const { login, alert, isLoading } = useAuth();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormInputs>();
+    formState: { errors },
+  } = useForm<LoginData>();
 
-  const [alert, setAlert] = useState<{ type: "success" | "error"; message: string } | null>(null);
-  const navigate = useNavigate();
-
-  const onSubmit = async (data: LoginFormInputs) => {
-    try {
-      const res = await axios.post("http://localhost:3000/api/login", data, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      setUser(res.data.user);
-      navigate("/admin");
-    } catch (err: any) {
-      setAlert({
-        type: "error",
-        message: err.response?.data?.message || "Đăng nhập thất bại!",
-      });
-    }
+  const onSubmit = async (data: LoginData) => {
+    await login(data);
   };
 
   return (
@@ -47,8 +26,8 @@ const LoginPage = () => {
         Đăng nhập
       </h2>
 
-      {/* Hiển thị alert chỉ khi thất bại */}
-      {alert && (
+      {/* Hiển thị alert */}
+      {alert && alert.type === "error" && (
         <Alert
           variant="destructive"
           className="mb-2 border-red-500 bg-red-50 text-red-700"
@@ -102,13 +81,14 @@ const LoginPage = () => {
       {/* Nút submit */}
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isLoading}
         className={`w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition ${
-          isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+          isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
-        {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
+        {isLoading ? "Đang xử lý..." : "Đăng nhập"}
       </button>
+      
       <div className="text-center">
         Bạn có tài khoản?
         <span className="text-sm text-blue-500">

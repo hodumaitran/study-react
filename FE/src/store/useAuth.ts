@@ -1,20 +1,13 @@
 import { create } from "zustand";
-
-interface User {
-  _id: string;
-  email: string;
-  fullname?: string;
-  username?: string;
-  avatar?: string;
-}
+import { IUser } from "@/types";
 
 interface AuthState {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: IUser | null;
+  setUser: (user: IUser | null) => void;
   logout: () => void;
 }
 
-const getInitialUser = (): User | null => {
+const getInitialUser = (): IUser | null => {
   const stored = localStorage.getItem("user");
   return stored ? JSON.parse(stored) : null;
 };
