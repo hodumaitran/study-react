@@ -1,4 +1,4 @@
-import { IBlog, IUser } from "@/types";
+import { IBlog } from "@/types";
 
 export const PostCard = ({ post }: { post: IBlog }) => {
   const stripHtml = (html: string) => {
